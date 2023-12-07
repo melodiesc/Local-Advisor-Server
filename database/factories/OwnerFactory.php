@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class OwnerFactory extends Factory
 {
     protected static ?string $password;
 
     public function definition(): array
     {
         return [
-            'lastname' => fake()->lastName(),
-            'firstname' => fake()->firstName(),
-            'birth_date' => fake()->date(),
-            'pseudo' => fake()->unique()->userName(),
-            'email' => fake()->unique()->safeEmail(),
+            'lastname' => $this->faker->lastName(),
+            'firstname' => $this->faker->firstName(),
+            'birth_date' => $this->faker->date(),
+            'pseudo' => $this->faker->unique()->userName(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
