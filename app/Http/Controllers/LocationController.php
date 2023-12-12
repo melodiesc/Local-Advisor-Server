@@ -7,12 +7,19 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // public function index()
+    // {
+    //     $locations = Location::all();
+    //     return response()->json(['locations' => $locations]);
+    // }
+
     public function index()
     {
-        $locations = Location::all();
+        $locations = Location::join('owners', 'locations.owner_id', '=', 'owners.id')
+                             ->join('categories', 'locations.category_id', '=', 'categories.id')
+                             ->select('locations.*', 'owners.firstname as owner_firstname', 'owners.lastname as owner_lastname', 'categories.category as category')
+                             ->get();
+
         return response()->json(['locations' => $locations]);
     }
 
