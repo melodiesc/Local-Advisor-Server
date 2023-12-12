@@ -4,62 +4,44 @@ namespace App\Http\Controllers;
 
 use App\Models\Owner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Validator;
 
 class OwnerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'lastname' => 'required',
+            'firstname' =>  'required',
+            'pseudo' => 'required',
+            'birth_date' => 'required',
+            'email' => 'required|email|unique:owners',
+            'password' => 'required',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Owner $owner)
-    {
-        //
-    }
+        if($validator->fails()){
+            return response()->json([
+                'status' => 'false',
+                'data' => $validator->errors()
+            ]);
+        } else {
+            $user = Owner::create([
+                'lastname' => $request->lastname,
+                'firstname' => $request->firstname,
+                'pseudo' => $request->pseudo,
+                'birth_date' => $request->birth_date,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Owner $owner)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Owner $owner)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Owner $owner)
-    {
-        //
+            $token = $user->createToken('owner_token')->plainTextToken;
+            
+            return response()->json([
+                'status' => 'true',
+                'message'=> 'Utilisateur bien enregistré!',
+                'data' => $token,
+            ]);
+        } 
     }
 }
