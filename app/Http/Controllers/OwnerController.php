@@ -11,37 +11,46 @@ class OwnerController extends Controller
 {
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'lastname' => 'required',
-            'firstname' =>  'required',
-            'pseudo' => 'required',
-            'birth_date' => 'required',
-            'email' => 'required|email|unique:owners',
-            'password' => 'required',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'lastname' => 'required',
+                'firstname' =>  'required',
+                'pseudo' => 'required|unique:owners',
+                'birth_date' => 'required',
+                'email' => 'required|email|unique:owners',
+                'password' => 'required',
+            ]);
 
-        if($validator->fails()){
+            if($validator->fails()){
+                return response()->json([
+                    'status' => 'false',
+                    'data' => $validator->errors()
+                ]);
+            } else {
+                $user = Owner::create([
+                    'lastname' => $request->lastname,
+                    'firstname' => $request->firstname,
+                    'pseudo' => $request->pseudo,
+                    'birth_date' => $request->birth_date,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+
+                $token = $user->createToken('owner_token')->plainTextToken;
+                
+                return response()->json([
+                    'status' => 'true',
+                    'message'=> 'Utilisateur bien enregistré!',
+                    'data' => $token,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // En cas d'erreur, retournez une réponse appropriée
             return response()->json([
                 'status' => 'false',
-                'data' => $validator->errors()
-            ]);
-        } else {
-            $user = Owner::create([
-                'lastname' => $request->lastname,
-                'firstname' => $request->firstname,
-                'pseudo' => $request->pseudo,
-                'birth_date' => $request->birth_date,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            $token = $user->createToken('owner_token')->plainTextToken;
-            
-            return response()->json([
-                'status' => 'true',
-                'message'=> 'Utilisateur bien enregistré!',
-                'data' => $token,
-            ]);
-        } 
+                'message' => 'Une erreur s\'est produite lors de l\'enregistrement.',
+                'error' => $e->getMessage(), // Pour obtenir des détails sur l'erreur
+            ], 500); // Vous pouvez également utiliser un code d'erreur différent si nécessaire
+        }   
     }
 }
