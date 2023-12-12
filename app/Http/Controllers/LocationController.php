@@ -33,35 +33,62 @@ class LocationController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Location $location)
+    public function store(Request $request)
     {
-        //
+        $location = new Location();
+        $location->id = $request->id;
+        $location->owner_id = $request->owner_id;
+        $location->name = $request->name;
+        $location->address = $request->address;
+        $location->zip_code = $request->zip_code;
+        $location->city = $request->city;
+        $location->category_id = $request->category_id;
+        $location->description = $request->description;
+        $location->image_path = $request->image_path;
+    
+        $location->save();
+    
+        return response()->json($location, 201);
+    }
+    
+    public function show($id)
+{
+    $location = Location::with('category', 'owner') 
+                        ->where('id', $id)
+                        ->first();
+
+    if (!$location) {
+        return response()->json(['message' => 'Location not found'], 404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    return response()->json($location);
+}
     public function edit(Location $location)
     {
-        //
+        
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+  
     public function update(Request $request, Location $location)
     {
-        //
+        
+        $location->id = $request->id;
+        $location->owner_id = $request->owner_id;
+        $location->name = $request->name;
+        $location->address = $request->address;
+        $location->zip_code = $request->zip_code;
+        $location->city = $request->city;
+        $location->category_id = $request->category_id;
+        $location->description = $request->description;
+        $location->image_path = $request->image_path;
+    
+        $location->save();
+    
+        return response()->json($location);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Location $location)
     {
-        //
+        $location->delete();
+        return response()->json(['message' => 'Location deleted successfully']);
     }
 }

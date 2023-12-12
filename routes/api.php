@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('/{category}', [SearchController::class, 'search']);
 Route::get('/locations', [LocationController::class, 'index']);
+Route::get('/{id}', [LocationController::class, 'show']);
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::get('/', [ProductController::class, 'index']);
 //     Route::post('/register', [ProductController::class, 'store']);
