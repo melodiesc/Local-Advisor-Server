@@ -13,6 +13,8 @@ Route::post('/register_owner', [OwnerController::class, 'store']);
 Route::get('/locations', [LocationController::class, 'index']);
 Route::post('/{category}', [SearchController::class, 'search']);
 Route::get('/{id}', [LocationController::class, 'show']);
+Route::post('/login', [LoginController::class, 'store']);
+// Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
