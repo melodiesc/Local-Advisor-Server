@@ -30,14 +30,13 @@ class LoginController extends Controller
         ]);
     
         $user = User::where('email', $credentials['email'])->first();
-    
+
         if (!$user) {
             $user = Owner::where('email', $credentials['email'])->first();
         }
     
         if ($user && Hash::check($credentials['password'], $user->password)) {
             $token = $user->createToken('authToken')->plainTextToken;
-    
             return response()->json([
                 'token' => $token,
                 'user' => $user,
