@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\LoginController;
 
 Route::post('/register_user', [RegisterController::class, 'store']);
 Route::post('/register_owner', [OwnerController::class, 'store']);
