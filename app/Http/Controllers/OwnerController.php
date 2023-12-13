@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+
 
 class OwnerController extends Controller
 {
@@ -27,7 +28,7 @@ class OwnerController extends Controller
                     'data' => $validator->errors()
                 ]);
             } else {
-                $user = Owner::create([
+                $owner = Owner::create([
                     'lastname' => $request->lastname,
                     'firstname' => $request->firstname,
                     'pseudo' => $request->pseudo,
@@ -36,7 +37,7 @@ class OwnerController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
 
-                $token = $user->createToken('owner_token')->plainTextToken;
+                $token = $owner->createToken('owner_token')->plainTextToken;
                 
                 return response()->json([
                     'status' => 'true',

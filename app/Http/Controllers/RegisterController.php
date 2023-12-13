@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+
 use App\Models\User;
 
 class RegisterController extends Controller
@@ -44,12 +45,11 @@ class RegisterController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            // En cas d'erreur, retournez une réponse appropriée
             return response()->json([
                 'status' => 'false',
                 'message' => 'Une erreur s\'est produite lors de l\'enregistrement.',
-                'error' => $e->getMessage(), // Pour obtenir des détails sur l'erreur
-            ], 500); // Vous pouvez également utiliser un code d'erreur différent si nécessaire
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 }
