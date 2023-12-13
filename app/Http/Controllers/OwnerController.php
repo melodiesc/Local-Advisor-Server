@@ -45,12 +45,28 @@ class OwnerController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            // En cas d'erreur, retournez une réponse appropriée
             return response()->json([
                 'status' => 'false',
                 'message' => 'Une erreur s\'est produite lors de l\'enregistrement.',
-                'error' => $e->getMessage(), // Pour obtenir des détails sur l'erreur
-            ], 500); // Vous pouvez également utiliser un code d'erreur différent si nécessaire
+                'error' => $e->getMessage(),
+            ], 500);
         }   
     }
+
+        
+    public function checkOwnerEmail(Request $request)
+    {
+        try {
+            $emailExists = Owner::where('email', $request->input('email'))->exists();
+
+            return response()->json([
+                'exists' => $emailExists,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

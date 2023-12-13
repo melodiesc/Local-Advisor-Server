@@ -14,6 +14,7 @@ Route::get('/locations', [LocationController::class, 'index']);
 Route::post('/{category}', [SearchController::class, 'search']);
 Route::get('/{id}', [LocationController::class, 'show']);
 Route::post('/login', [LoginController::class, 'store']);
+Route::post('/check-owner-email', 'OwnerController@checkOwnerEmail');
 // Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
