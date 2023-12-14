@@ -5,52 +5,59 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Content;
 
 class ResetPasswordEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
+
     public function __construct($user)
     {
         $this->user = $user;
     }
+// Définit le sujet de l'e-mail et la vue à utiliser pour le contenu de l'e-mail
+    public function build()
+    {
+        return $this->subject('Réinitialisation de mot de passe')
+            ->view('emails.reset_password')
+            ->with([
+                'resetLink' => $this->generateResetLink($this->user), // Génération du lien de réinitialisation
+            ]);
+    }
 
-   public function build()
-   {
-    return $this->subject('This is Testing Mail')
-    ->view('emails.test');
-   }
+    public function generateResetLink($user)
+    {
+        // Générer un lien pour réinitialiser le mot de passe pour cet utilisateur
+        return URL::signedRoute('password.reset', ['user' => $user->id]);
+    }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('romano.kevin@hotmail.fr'),
+            from: new Address('jeffrey@example.com', 'Jeffrey Way'),
             subject: 'Order Shipped',
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
+    public function content()
     {
         return new Content(
-            view: 'view.name',
-            text:'test',
+            view: 'resetPasswordEmail',
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
+    public function attachments()
     {
-        return [];
+        // Si vous avez des pièces jointes à ajouter, faites-le ici
+        return [
+            // Exemple d'ajout d'une pièce jointe
+            // $this->attach(storage_path('file.txt'))
+        ];
     }
 }
