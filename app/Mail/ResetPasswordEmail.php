@@ -13,21 +13,23 @@ class ResetPasswordEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct()
+    public $user;
+    public function __construct($user)
     {
-        //
+        $this->user = $user;
     }
 
-    /**
-     * Get the message envelope.
-     */
+   public function build()
+   {
+    return $this->subject('This is Testing Mail')
+    ->view('emails.test');
+   }
+
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Password Email',
+            from: new Address('romano.kevin@hotmail.fr'),
+            subject: 'Order Shipped',
         );
     }
 
@@ -38,6 +40,7 @@ class ResetPasswordEmail extends Mailable
     {
         return new Content(
             view: 'view.name',
+            text:'test',
         );
     }
 
