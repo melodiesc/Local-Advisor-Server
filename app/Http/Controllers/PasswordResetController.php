@@ -29,3 +29,5 @@ class PasswordResetController extends Controller
         return redirect()->back()->with('error', 'Aucun utilisateur trouvé avec cette adresse e-mail.');
     }
 }
+
+    
