@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -30,9 +29,10 @@ class LoginController extends Controller
         ]);
     
         $user = User::where('email', $credentials['email'])->first();
-
+        $isOwner = false;
         if (!$user) {
             $user = Owner::where('email', $credentials['email'])->first();
+            $isOwner = true;
         }
         
         if ($user && Hash::check($credentials['password'], $user->password)) {
@@ -40,6 +40,7 @@ class LoginController extends Controller
             return response()->json([
                 'token' => $token,
                 'user' => $user,
+                'isOwner' => $isOwner,
             ], 200);
         }
     
@@ -53,7 +54,6 @@ class LoginController extends Controller
         //
     }
 
-    
     public function edit(string $id)
     {
         //

@@ -54,14 +54,13 @@ class OwnerController extends Controller
         }   
     }
 
-        
     public function checkOwnerEmail(Request $request)
     {
         try {
-            $emailExists = Owner::where('email', $request->input('email'))->exists();
+            $exists = Owner::where('email', $request->input('email'))->exists();
 
             return response()->json([
-                'exists' => $emailExists,
+                'exists' => $exists,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -69,5 +68,4 @@ class OwnerController extends Controller
             ], 500);
         }
     }
-
 }
