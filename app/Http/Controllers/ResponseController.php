@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Responses;
+use App\Models\Response;
 use Illuminate\Http\Request;
 
-class ResponsesController extends Controller
+class ResponseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class ResponsesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Responses $responses)
+    public function show(Response $response)
     {
         //
     }
@@ -42,7 +42,7 @@ class ResponsesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Responses $responses)
+    public function edit(Response $response)
     {
         //
     }
@@ -50,7 +50,7 @@ class ResponsesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Responses $responses)
+    public function update(Request $request, Response $response)
     {
         //
     }
@@ -58,7 +58,7 @@ class ResponsesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Responses $responses)
+    public function destroy(Response $response)
     {
         //
     }
