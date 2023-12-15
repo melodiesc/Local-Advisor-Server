@@ -11,7 +11,8 @@ class CreateNoticesTable extends Migration
             $table->id();
             $table->foreignId('location_id')->constrained('locations');
             $table->foreignId('owner_id')->constrained('owners');
-            $table->text('content');
+            $table->text('comment');
+            $table->integer('rate');
             $table->timestamps();
 
             // $table->foreign('notice_id')->references('id')->on('notices')->onDelete('cascade');
