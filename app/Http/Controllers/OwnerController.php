@@ -37,12 +37,14 @@ class OwnerController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
 
-                $token = $owner->createToken('owner_token')->plainTextToken;
-                
+                // $token = $owner->createToken('owner_token')->plainTextToken;
+                // $isOwner = true;
+
                 return response()->json([
                     'status' => 'true',
                     'message'=> 'Utilisateur bien enregistré!',
-                    'data' => $token,
+                    // 'data' => $token,
+                    // 'isOwner' => $isOwner,
                 ]);
             }
         } catch (\Exception $e) {

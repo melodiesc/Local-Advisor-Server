@@ -36,12 +36,12 @@ class RegisterController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
         
-                $token = $user->createToken('user_token')->plainTextToken;
-                
+                // $token = $user->createToken('user_token')->plainTextToken;
+
                 return response()->json([
                     'status' => 'true',
                     'message'=> 'Utilisateur bien enregistré!',
-                    'data' => $token,
+                    // 'data' => $token,
                 ]);
             }
         } catch (\Exception $e) {
