@@ -13,7 +13,7 @@ use App\Http\Controllers\PasswordResetController;
 Route::post('/register_user', [RegisterController::class, 'store']);
 Route::post('/register_owner', [OwnerController::class, 'store']);
 Route::get('/locations', [LocationController::class, 'index']);
-Route::post('/login', [LoginController::class, 'store']);
+Route::post('/login', [LoginController::class, 'store'])->name('login');
 Route::post('/password/reset-email', [PasswordResetController::class, 'sendResetEmail'])->name('password.reset');
 Route::post('/check-owner-email', 'OwnerController@checkOwnerEmail');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
@@ -24,4 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::middleware('auth:sanctum')->get('/{userType}/profile', [ProfileController::class, 'index']);
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/updateprofil/{userType}', [ProfileController::class, 'update']);
+});
