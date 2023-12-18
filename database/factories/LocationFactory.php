@@ -16,6 +16,7 @@ class LocationFactory extends Factory
             'city'=>$this->faker->city(),
             'category_id'=>$this->faker->numberBetween(1, 3),
             'description'=>$this->faker->text(191),
+            'image_path' => $this->faker->imageUrl()
         ];
     }
 }

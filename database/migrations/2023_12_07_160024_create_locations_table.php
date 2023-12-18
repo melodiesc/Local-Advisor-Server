@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('city');
             $table->foreignId('category_id')->constrained('categories');
             $table->string('description');
+            $table->string('image_path');
             $table->timestamps();
         });
     }
