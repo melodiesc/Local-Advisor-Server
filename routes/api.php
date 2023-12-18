@@ -18,6 +18,7 @@ Route::post('/password/reset-email', [PasswordResetController::class, 'sendReset
 Route::post('/check-owner-email', 'OwnerController@checkOwnerEmail');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
 Route::get('/{id}', [LocationController::class, 'show']);
+Route::post('/create_card', [LocationController::class, 'store']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
