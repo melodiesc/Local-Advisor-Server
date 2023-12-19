@@ -18,6 +18,7 @@ Route::post('/password/reset-email', [PasswordResetController::class, 'sendReset
 Route::post('/check-owner-email', 'OwnerController@checkOwnerEmail');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
 Route::get('/{id}', [LocationController::class, 'show']);
+Route::put('/{id}/editcard', [LocationController::class, 'update']);
 Route::post('/create_card', [LocationController::class, 'store']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -27,3 +28,4 @@ Route::middleware('auth:sanctum')->get('/{userType}/profile', [ProfileController
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/updateprofil/{userType}', [ProfileController::class, 'update']);
 });
+

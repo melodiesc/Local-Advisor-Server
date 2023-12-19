@@ -96,8 +96,25 @@ class LocationController extends Controller
   
     public function update(Request $request, Location $location)
     {
-        
-        $location->id = $request->id;
+        $request->validate([
+            'owner_id'=> 'required',
+            'name'=> 'required',
+            'address'=> 'required',
+            'zip_code'=> 'required|numeric',
+            'city'=> 'required',
+            'category_id'=> 'required',
+            'description'=> 'required',
+            'image_path' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $imageName = time() . '_' . pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $image->getClientOriginalExtension();
+            $image_path = $image->storeAs('images', $imageName, 'public');
+            $image->move(public_path('images'), $imageName);
+            $location->image_path = $image_path;
+        }
+    
         $location->owner_id = $request->owner_id;
         $location->name = $request->name;
         $location->address = $request->address;
@@ -105,9 +122,9 @@ class LocationController extends Controller
         $location->city = $request->city;
         $location->category_id = $request->category_id;
         $location->description = $request->description;
-        $location->image_path = $request->image_path;
     
         $location->save();
+
     
         return response()->json($location);
     }
