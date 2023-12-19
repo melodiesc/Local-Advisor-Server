@@ -29,4 +29,9 @@ class Location extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function notices()
+{
+    return $this->hasMany(Notice::class);
+}
 }

@@ -10,13 +10,10 @@ class CreateNoticesTable extends Migration
         Schema::create('notices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('location_id')->constrained('locations');
-            $table->foreignId('owner_id')->constrained('owners');
+            $table->foreignId('user_id')->constrained('users');
             $table->text('comment');
             $table->integer('rate');
             $table->timestamps();
-
-            // $table->foreign('notice_id')->references('id')->on('notices')->onDelete('cascade');
-            // $table->foreign('owner_id')->references('id')->on('owner')->onDelete('cascade');
         });
     }
 

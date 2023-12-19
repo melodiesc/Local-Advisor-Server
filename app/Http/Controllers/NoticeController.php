@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Location;
 use App\Models\Notice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class NoticeController extends Controller
 {
@@ -26,9 +28,29 @@ class NoticeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Location $location)
     {
-        //
+        try {
+
+            $request->validate([
+                'comment' => 'required',
+                'rate' => 'required|numeric',
+            ]);
+
+            $notice = Notice::create([
+                'location_id' => $location->id,
+                'user_id' => auth()->id(),
+                'comment' => $request->input('comment'),
+                'rate' => $request->input('rate'),
+            ]);
+
+            $notice->save();
+
+            return response()->json(['message' => 'Commentaire posté avec succès']);
+        } catch (\Exception $e) {
+            Log::error('Error in NoticeController@store: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
     }
 
     /**

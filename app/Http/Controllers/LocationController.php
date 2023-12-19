@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Location;
+use App\Models\Notice;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LocationController extends Controller
 {
@@ -14,7 +17,6 @@ class LocationController extends Controller
                              ->select('locations.*', 'owners.firstname as owner_firstname', 'owners.lastname as owner_lastname', 'categories.category as category')
                              ->get();
 
-        // Modifier le chemin de l'image pour renvoyer l'URL complet
         $locations = $locations->map(function ($location) {
         $location->image_path = asset($location->image_path);
         return $location;
@@ -90,7 +92,7 @@ class LocationController extends Controller
 }
     public function edit(Location $location)
     {
-        
+        //
     }
 
   
@@ -115,5 +117,30 @@ class LocationController extends Controller
     {
         $location->delete();
         return response()->json(['message' => 'Location deleted successfully']);
+    }
+
+    public function storeNotice(Request $request)
+    {
+        try {
+            $location = Location::join('owners', 'locations.owner_id', '=', 'owners.id')
+                            ->select('locations.id as location_id', 'owners.id as user_id')
+                            ->first();
+
+            $notice = new Notice([
+                'location_id' => $request->input('numericId'),
+                'user_id' => $request->input('user_id'),
+                'comment' => $request->input('comment'),
+                'rate' => $request->input('rate'),
+            ]);
+
+            $notice->save();
+
+            return response()->json(['message' => 'Commentaire posté avec succès']);
+        } catch (\Exception $e) {
+            Log::info('Location ID from request: ' . $location->location_id);
+            Log::info('User ID from request: ' . $location->user_id);
+            Log::error('Error in NoticeController@storeNotice: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
     }
 }
