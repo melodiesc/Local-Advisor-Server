@@ -21,6 +21,7 @@ Route::post('/login', [LoginController::class, 'store'])->name('login');
 Route::post('/password/reset-email', [PasswordResetController::class, 'sendResetEmail'])->name('password.reset');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
 Route::post('/{id}/responses/store', [ResponseController::class, 'store']);
+Route::get('/{id}/responses/show', [ResponseController::class, 'show']);
 Route::post('/{id}/notices/store', [NoticeController::class, 'store']);
 Route::get('/{id}/notices/show', [NoticeController::class, 'show']);
 Route::get('/{id}', [LocationController::class, 'show']);
