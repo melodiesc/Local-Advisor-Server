@@ -99,28 +99,49 @@ class LocationController extends Controller
     }
 
   
-    public function update(Request $request, Location $location)
+    public function update(Request $request, $id)
     {
-        
-        $location->id = $request->id;
-        $location->owner_id = $request->owner_id;
-        $location->name = $request->name;
-        $location->address = $request->address;
-        $location->zip_code = $request->zip_code;
-        $location->city = $request->city;
-        $location->category_id = $request->category_id;
-        $location->description = $request->description;
-        $location->image_path = $request->image_path;
-    
-        $location->save();
-    
-        return response()->json($location);
-    }
-    public function destroy(Location $location)
-    {
-        $location->delete();
-        return response()->json(['message' => 'Location deleted successfully']);
+        $request->validate([
+            'owner_id' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'zip_code' => 'required|numeric',
+            'city' => 'required',
+            'category_id' => 'required',
+            'description' => 'required',
+        ]);
+
+        $location = Location::find($id);
+
+        if (!$location) {
+            return response()->json(['message' => 'Aucun lieu trouvé à cet ID'], 404);
+        }
+
+        $location->update([
+            'owner_id' => $request->owner_id,
+            'name' => $request->name,
+            'address' => $request->address,
+            'zip_code' => $request->zip_code,
+            'city' => $request->city,
+            'category_id' => $request->category_id,
+            'description' => $request->description,
+        ]);
+
+        return response()->json(['message' => 'Lieu mis à jour avec succès']);
     }
 
+    
+    public function destroy($id)
+    {
+        $location = Location::find($id);
+
+        if (!$location) {
+            return response()->json(['message' => 'Aucun lieu trouvé à cet ID'], 404);
+        }
+
+        $location->delete();
+
+        return response()->json(['message' => 'Lieu supprimé avec succès']);
+    }
    
 }

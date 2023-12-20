@@ -17,6 +17,8 @@ Route::post('/create_card', [LocationController::class, 'store']);
 Route::post('/register_user', [RegisterController::class, 'store']);
 Route::post('/register_owner', [OwnerController::class, 'store']);
 Route::get('/locations', [LocationController::class, 'index']);
+Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
+Route::put('/locations/{id}', [LocationController::class, 'update']);
 Route::post('/login', [LoginController::class, 'store'])->name('login');
 Route::post('/password/reset-email', [PasswordResetController::class, 'sendResetEmail'])->name('password.reset');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
