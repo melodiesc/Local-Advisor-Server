@@ -31,53 +31,54 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'owner_id'=> 'required',
-            'name'=> 'required',
-            'address'=> 'required',
-            'zip_code'=> 'required|numeric',
-            'city'=> 'required',
-            'category_id'=> 'required',
-            'description'=> 'required',
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-    
-        $image = $request->file('image_path');
-    
-        $sizeInKb = $image->getSize() / 1024;
-        if ($sizeInKb > 2048) {
-            return response()->json(['error' => 'L\'image est trop volumineuse, elle ne doit pas dépasser 2 Mo.'], 400);
-        }
-    
-        $originalName = $image->getClientOriginalName();
-        $extension = $image->getClientOriginalExtension();
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-    
-        if (!in_array(strtolower($extension), $allowedExtensions)) {
-            return response()->json(['error' => 'Format d\'image non pris en charge. Utilisez des images au format : jpg, jpeg, png ou gif.'], 400);
-        }
-    
-        $imageName = time() . '_' . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
-        $image_path = $image->storeAs('images', $imageName, 'public');
-        $image->move(public_path('images'), $imageName);
+    $request->validate([
+        'owner_id'=> 'required',
+        'name'=> 'required',
+        'address'=> 'required',
+        'zip_code'=> 'required|numeric',
+        'city'=> 'required',
+        'category_id'=> 'required',
+        'description'=> 'required',
+        'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $image = $request->file('image_path');
+
+    $sizeInKb = $image->getSize() / 1024;
+    if ($sizeInKb > 2048) {
+        return response()->json(['error' => 'L\'image est trop volumineuse, elle ne doit pas dépasser 2 Mo.'], 400);
+    }
+
+    $originalName = $image->getClientOriginalName();
+    $extension = $image->getClientOriginalExtension();
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    if (!in_array(strtolower($extension), $allowedExtensions)) {
+        return response()->json(['error' => 'Format d\'image non pris en charge. Utilisez des images au format : jpg, jpeg, png ou gif.'], 400);
+    }
+
+    $imageName = time() . '_' . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
+    $image_path = $image->storeAs('images', $imageName, 'public');
+    $image->move(public_path('images'), $imageName);
 
 
-        $location = Location::create([
-            'owner_id'=> $request->owner_id,
-            'name'=> $request->name,
-            'address'=> $request->address,
-            'zip_code'=> $request->zip_code,
-            'city'=> $request->city,
-            'category_id'=> $request->category_id,
-            'description'=> $request->description,
-            'image_path' => $image_path,
-        ]);
-
+    $location = Location::create([
+        'owner_id'=> $request->owner_id,
+        'name'=> $request->name,
+        'address'=> $request->address,
+        'zip_code'=> $request->zip_code,
+        'city'=> $request->city,
+        'category_id'=> $request->category_id,
+        'description'=> $request->description,
+        'image_path' => $image_path,
+    ]);
 
         return response()->json($location, 201);
     }
+
+
     public function show($id)
-{
+    {
     $location = Location::with('category', 'owner') 
                         ->where('id', $id)
                         ->first();
@@ -89,7 +90,9 @@ class LocationController extends Controller
     }
 
     return response()->json($location);
-}
+    }
+
+        
     public function edit(Location $location)
     {
         //
@@ -119,28 +122,5 @@ class LocationController extends Controller
         return response()->json(['message' => 'Location deleted successfully']);
     }
 
-    public function storeNotice(Request $request)
-    {
-        try {
-            $location = Location::join('owners', 'locations.owner_id', '=', 'owners.id')
-                            ->select('locations.id as location_id', 'owners.id as user_id')
-                            ->first();
-
-            $notice = new Notice([
-                'location_id' => $request->input('numericId'),
-                'user_id' => $request->input('user_id'),
-                'comment' => $request->input('comment'),
-                'rate' => $request->input('rate'),
-            ]);
-
-            $notice->save();
-
-            return response()->json(['message' => 'Commentaire posté avec succès']);
-        } catch (\Exception $e) {
-            Log::info('Location ID from request: ' . $location->location_id);
-            Log::info('User ID from request: ' . $location->user_id);
-            Log::error('Error in NoticeController@storeNotice: ' . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
-        }
-    }
+   
 }

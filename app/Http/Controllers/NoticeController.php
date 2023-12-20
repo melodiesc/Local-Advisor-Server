@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use App\Models\Notice;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class NoticeController extends Controller
@@ -28,18 +30,16 @@ class NoticeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Location $location)
+    public function store(Request $request)
     {
         try {
+            $location = Location::join('owners', 'locations.owner_id', '=', 'owners.id')
+                            ->select('locations.id as location_id', 'owners.id as user_id')
+                            ->first();
 
-            $request->validate([
-                'comment' => 'required',
-                'rate' => 'required|numeric',
-            ]);
-
-            $notice = Notice::create([
-                'location_id' => $location->id,
-                'user_id' => auth()->id(),
+            $notice = new Notice([
+                'location_id' => $request->input('numericId'),
+                'user_id' => $request->input('user_id'),
                 'comment' => $request->input('comment'),
                 'rate' => $request->input('rate'),
             ]);
@@ -48,22 +48,31 @@ class NoticeController extends Controller
 
             return response()->json(['message' => 'Commentaire posté avec succès']);
         } catch (\Exception $e) {
-            Log::error('Error in NoticeController@store: ' . $e->getMessage());
+            Log::info('Location ID from request: ' . $location->location_id);
+            Log::info('User ID from request: ' . $location->user_id);
+            Log::error('Error in NoticeController@storeNotice: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Notice $notice)
+    public function show(Notice $notices, $id)
     {
-        //
+        try {
+            $notices = DB::table('notices')
+                ->where('location_id', $id)
+                ->select('notices.*', 'users.pseudo')
+                ->join('users', 'notices.user_id', '=', 'users.id')
+                ->get();
+            
+        return response()->json(['data' => $notices]);
+    
+        } catch (\Exception $e) {
+            Log::error('Error in NoticeController@show: ' . $e->getMessage());
+        }
     }
+    
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(Notice $notice)
     {
         //

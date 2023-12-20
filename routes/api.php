@@ -18,7 +18,8 @@ Route::get('/locations', [LocationController::class, 'index']);
 Route::post('/login', [LoginController::class, 'store'])->name('login');
 Route::post('/password/reset-email', [PasswordResetController::class, 'sendResetEmail'])->name('password.reset');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
-Route::post('/{id}/notices', [LocationController::class, 'storeNotice']);
+Route::post('/{id}/notices/store', [NoticeController::class, 'store']);
+Route::get('/{id}/notices/show', [NoticeController::class, 'show']);
 Route::get('/{id}', [LocationController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
