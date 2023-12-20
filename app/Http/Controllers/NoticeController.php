@@ -58,6 +58,7 @@ class NoticeController extends Controller
     public function show(Notice $notices, $id)
     {
         try {
+                       
             $notices = DB::table('notices')
                 ->where('location_id', $id)
                 ->select('notices.*', 'users.pseudo')

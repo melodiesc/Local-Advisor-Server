@@ -10,6 +10,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ResponseController;
+
 
 Route::post('/create_card', [LocationController::class, 'store']);
 Route::post('/register_user', [RegisterController::class, 'store']);
@@ -18,6 +20,7 @@ Route::get('/locations', [LocationController::class, 'index']);
 Route::post('/login', [LoginController::class, 'store'])->name('login');
 Route::post('/password/reset-email', [PasswordResetController::class, 'sendResetEmail'])->name('password.reset');
 Route::post('/categories/{category}', [SearchController::class, 'search']);
+Route::post('/{id}/responses/store', [ResponseController::class, 'store']);
 Route::post('/{id}/notices/store', [NoticeController::class, 'store']);
 Route::get('/{id}/notices/show', [NoticeController::class, 'show']);
 Route::get('/{id}', [LocationController::class, 'show']);

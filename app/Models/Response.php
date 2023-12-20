@@ -8,13 +8,17 @@ use App\Models\Owner;
 
 class Response extends Model
 {
-    // Define the relationship with Notice
+    protected $fillable = [
+        'notice_id',
+        'owner_id',
+        'content',
+    ];
+
     public function notice()
     {
         return $this->belongsTo(Notice::class, 'notice_id');
     }
 
-    // Define the relationship with Owner
     public function owner()
     {
         return $this->belongsTo(Owner::class, 'owner_id');
