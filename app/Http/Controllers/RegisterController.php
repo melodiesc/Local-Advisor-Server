@@ -10,23 +10,27 @@ use App\Models\User;
 
 class RegisterController extends Controller
 {
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
+            // Validation des données d'entrée
             $validator = Validator::make($request->all(), [
                 'lastname' => 'required',
-                'firstname' =>  'required',
+                'firstname' => 'required',
                 'pseudo' => 'required|unique:users',
                 'birth_date' => 'required',
                 'email' => 'required|email|unique:users',
                 'password' => 'required',
             ]);
-        
-            if($validator->fails()){
+
+            // Vérification s'il y a des erreurs de validation
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => 'false',
                     'data' => $validator->errors()
                 ]);
             } else {
+                // Création d'un nouvel utilisateur de type "User"
                 $user = User::create([
                     'lastname' => $request->lastname,
                     'firstname' => $request->firstname,
@@ -35,16 +39,15 @@ class RegisterController extends Controller
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
-        
-                // $token = $user->createToken('user_token')->plainTextToken;
 
+                // Retour d'une réponse JSON indiquant que l'utilisateur a été enregistré avec succès
                 return response()->json([
                     'status' => 'true',
                     'message'=> 'Utilisateur bien enregistré!',
-                    // 'data' => $token,
                 ]);
             }
         } catch (\Exception $e) {
+            // En cas d'erreur, retour d'une réponse JSON avec un message d'erreur et le code HTTP 500 (Internal Server Error)
             return response()->json([
                 'status' => 'false',
                 'message' => 'Une erreur s\'est produite lors de l\'enregistrement.',
@@ -52,4 +55,5 @@ class RegisterController extends Controller
             ], 500);
         }
     }
+
 }

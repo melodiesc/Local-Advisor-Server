@@ -33,10 +33,12 @@ class NoticeController extends Controller
     public function store(Request $request)
     {
         try {
+            // Recherche d'une localisation avec le propriétaire associé
             $location = Location::join('owners', 'locations.owner_id', '=', 'owners.id')
                             ->select('locations.id as location_id', 'owners.id as user_id')
                             ->first();
 
+            // Création d'une nouvelle instance de Notice avec les données fournies dans la requête
             $notice = new Notice([
                 'location_id' => $request->input('numericId'),
                 'user_id' => $request->input('user_id'),
@@ -44,10 +46,13 @@ class NoticeController extends Controller
                 'rate' => $request->input('rate'),
             ]);
 
+            // Sauvegarde du commentaire dans la base de données
             $notice->save();
 
+            // Retour d'une réponse JSON indiquant que le commentaire a été posté avec succès
             return response()->json(['message' => 'Commentaire posté avec succès']);
         } catch (\Exception $e) {
+            // En cas d'erreur, journalisation des informations pertinentes et retour d'une réponse JSON avec une erreur 500 (Internal Server Error)
             Log::info('Location ID from request: ' . $location->location_id);
             Log::info('User ID from request: ' . $location->user_id);
             Log::error('Error in NoticeController@storeNotice: ' . $e->getMessage());
@@ -55,22 +60,25 @@ class NoticeController extends Controller
         }
     }
 
+
     public function show(Notice $notices, $id)
     {
         try {
-                       
+            // Recherche des avis pour une localisation spécifique
             $notices = DB::table('notices')
                 ->where('location_id', $id)
                 ->select('notices.*', 'users.pseudo')
                 ->join('users', 'notices.user_id', '=', 'users.id')
                 ->get();
-            
-        return response()->json(['data' => $notices]);
-    
+
+            // Retour d'une réponse JSON contenant les avis récupérés
+            return response()->json(['data' => $notices]);
         } catch (\Exception $e) {
+            // En cas d'erreur, journalisation de l'erreur et retour d'une réponse JSON avec un message d'erreur
             Log::error('Error in NoticeController@show: ' . $e->getMessage());
         }
     }
+
     
 
 

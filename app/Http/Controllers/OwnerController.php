@@ -13,21 +13,24 @@ class OwnerController extends Controller
     public function store(Request $request)
     {
         try {
+            // Validation des données d'entrée
             $validator = Validator::make($request->all(), [
                 'lastname' => 'required',
-                'firstname' =>  'required',
+                'firstname' => 'required',
                 'pseudo' => 'required|unique:owners',
                 'birth_date' => 'required',
                 'email' => 'required|email|unique:owners',
                 'password' => 'required',
             ]);
-
-            if($validator->fails()){
+    
+            // Vérification s'il y a des erreurs de validation
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => 'false',
-                    'data' => $validator->errors()
+                    'data' => $validator->errors(),
                 ]);
             } else {
+                // Création d'un nouvel utilisateur de type "Owner"
                 $owner = Owner::create([
                     'lastname' => $request->lastname,
                     'firstname' => $request->firstname,
@@ -36,18 +39,15 @@ class OwnerController extends Controller
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
-
-                // $token = $owner->createToken('owner_token')->plainTextToken;
-                // $isOwner = true;
-
+    
+                // Retour d'une réponse JSON indiquant que l'utilisateur a été enregistré avec succès
                 return response()->json([
                     'status' => 'true',
-                    'message'=> 'Utilisateur bien enregistré!',
-                    // 'data' => $token,
-                    // 'isOwner' => $isOwner,
+                    'message' => 'Utilisateur bien enregistré!',
                 ]);
             }
         } catch (\Exception $e) {
+            // En cas d'erreur, retour d'une réponse JSON avec un message d'erreur et le code HTTP 500 (Internal Server Error)
             return response()->json([
                 'status' => 'false',
                 'message' => 'Une erreur s\'est produite lors de l\'enregistrement.',
@@ -56,18 +56,4 @@ class OwnerController extends Controller
         }   
     }
 
-    public function checkOwnerEmail(Request $request)
-    {
-        try {
-            $exists = Owner::where('email', $request->input('email'))->exists();
-
-            return response()->json([
-                'exists' => $exists,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
 }
